@@ -1,7 +1,7 @@
 package me.elsiff.morefish.hooker
 
 import me.clip.placeholderapi.PlaceholderAPI
-import me.clip.placeholderapi.external.EZPlaceholderHook
+import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import me.elsiff.morefish.MoreFish
 import me.elsiff.morefish.configuration.format.Format
 import me.elsiff.morefish.fishing.competition.FishingCompetition
@@ -9,13 +9,15 @@ import org.bukkit.entity.Player
 
 /**
  * Created by elsiff on 2019-01-24.
+ * Update the papi from 2.7.1 to 2.10.9 by Mical on 2021-1-25
  */
 class PlaceholderApiHooker : PluginHooker {
     override val pluginName = "PlaceholderAPI"
     override var hasHooked = false
 
     override fun hook(plugin: MoreFish) {
-        MoreFishPlaceholder(plugin).hook()
+        // MoreFishPlaceholder(plugin).hook()
+        MoreFishPlaceholder(plugin).register()
         Format.init(this)
         hasHooked = true
     }
@@ -24,10 +26,16 @@ class PlaceholderApiHooker : PluginHooker {
         return PlaceholderAPI.setPlaceholders(player, string)
     }
 
-    class MoreFishPlaceholder(
-        moreFish: MoreFish
-    ) : EZPlaceholderHook(moreFish, "morefish") {
+    class MoreFishPlaceholder constructor(
+        val moreFish: MoreFish
+    ) : PlaceholderExpansion() {
         private val competition: FishingCompetition = moreFish.competition
+
+        override fun getIdentifier(): String = "morefish"
+
+        override fun getAuthor(): String = moreFish.description.authors.toString()
+
+        override fun getVersion(): String = moreFish.description.version
 
         override fun onPlaceholderRequest(player: Player?, identifier: String): String? {
             return when {
@@ -78,5 +86,6 @@ class PlaceholderApiHooker : PluginHooker {
                 else -> null
             }
         }
+
     }
 }

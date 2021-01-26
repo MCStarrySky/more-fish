@@ -54,7 +54,8 @@ class FishingListener(
                 for (handler in catchHandlersOf(event, fish)) {
                     handler.handle(event.player, fish)
                 }
-                caught.itemStack = converter.createItemStack(fish, event.player)
+                caught.setItemStack(converter.createItemStack(fish, event.player))
+                //caught.itemStack = converter.createItemStack(fish, event.player)
             }
         }
     }
